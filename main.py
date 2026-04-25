@@ -1,7 +1,7 @@
 from fastmcp import FastMCP
 import random
 import json
-from prefect import flow
+import os
 
 # Create MCP server
 mcp = FastMCP('Simple Calculator Server')
@@ -23,7 +23,7 @@ def server_info() -> str:
     }
     return json.dumps(info, indent=2)
 
-# ✅ ENTRYPOINT (VERY IMPORTANT)
-@flow
-def main():
-    mcp.run(transport='http', host="0.0.0.0", port=8000)
+# ✅ Correct entrypoint for cloud hosting
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    mcp.run(transport='http', host="0.0.0.0", port=port)
